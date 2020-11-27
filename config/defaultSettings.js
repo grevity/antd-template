@@ -6,10 +6,7 @@ const proSettings = {
   fixedHeader: false,
   fixSiderbar: true,
   colorWeak: false,
-  menu: {
-    locale: true,
-  },
-  title: 'CallsLab',
+  title: 'Project Name',
   pwa: false,
   iconfontUrl: '',
 };

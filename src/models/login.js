@@ -3,6 +3,7 @@ import { history } from 'umi';
 import { fakeAccountLogin } from '@/services/login';
 import { setAuthority } from '@/utils/authority';
 import { getPageQuery } from '@/utils/utils';
+import { message } from 'antd';
 const Model = {
   namespace: 'login',
   state: {
@@ -19,6 +20,7 @@ const Model = {
       if (response.status === 'ok') {
         const urlParams = new URL(window.location.href);
         const params = getPageQuery();
+        message.success('🎉 🎉 🎉  登录成功！');
         let { redirect } = params;
 
         if (redirect) {

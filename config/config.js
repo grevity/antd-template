@@ -1,11 +1,21 @@
+// https://umijs.org/config/
 import { defineConfig } from 'umi';
 import defaultSettings from './defaultSettings';
+import proxy from './proxy';
+const { REACT_APP_ENV } = process.env;
 export default defineConfig({
+  hash: true,
   antd: {},
+  dva: {
+    hmr: true,
+  },
+  history: {
+    type: 'browser',
+  },
   locale: {
     default: 'en-US',
     antd: true,
-    baseNavigator: true,
+    baseNavigator: false,
   },
   dynamicImport: {
     loading: '@/components/PageLoading/index',
@@ -15,63 +25,62 @@ export default defineConfig({
   },
   routes: [
     {
-      path: '/user',
-      component: '../layouts/UserLayout',
-      routes: [
-        {
-          name: 'login',
-          path: '/user/login',
-          component: './login',
-        },
-      ],
-    },
-    {
       path: '/',
-      // component: '../layouts/SecurityLayout',
+      component: '../layouts/MasterLayout',
       routes: [
         {
-          path: '/',
-          component: '../layouts/BasicLayout',
-          authority: ['admin', 'user'],
+          path: '/user',
+          component: '../layouts/UserLayout',
           routes: [
             {
-              path: '/',
-              redirect: '/welcome',
+              path: '/user',
+              redirect: '/user/login',
             },
             {
-              path: '/welcome',
-              name: 'welcome',
+              name: 'login',
               icon: 'smile',
-              component: './Welcome',
+              path: '/user/login',
+              component: './user/login',
             },
             {
-              path: '/admin',
-              name: 'admin',
-              icon: 'crown',
-              component: './Admin',
-              authority: ['admin'],
-              routes: [
-                {
-                  path: '/admin/sub-page',
-                  name: 'sub-page',
-                  icon: 'smile',
-                  component: './Welcome',
-                  authority: ['admin'],
-                },
-              ],
+              name: 'register-result',
+              icon: 'smile',
+              path: '/user/register-result',
+              component: './user/register-result',
             },
             {
-              component: './404',
+              name: 'register',
+              icon: 'smile',
+              path: '/user/register',
+              component: './user/register',
+            },
+            {
+              component: '404',
             },
           ],
         },
         {
-          component: './404',
+          path: '/',
+          component: '../layouts/BasicLayout',
+          Routes: ['src/pages/Authorized'],
+          authority: ['admin', 'user'],
+          routes: [
+            {
+              path: '/',
+              redirect: '/dashboard',
+            },
+            {
+              path: '/dashboard',
+              name: 'dashboard',
+              icon: 'dashboard',
+              component: './dashboard'
+            },
+            {
+              component: '404',
+            },
+          ],
         },
       ],
-    },
-    {
-      component: './404',
     },
   ],
   theme: {
@@ -79,7 +88,10 @@ export default defineConfig({
   },
   title: false,
   ignoreMomentLocale: true,
+  proxy: proxy[REACT_APP_ENV || 'dev'],
   manifest: {
     basePath: '/',
   },
+  exportStatic: {},
+  esbuild: {},
 });
