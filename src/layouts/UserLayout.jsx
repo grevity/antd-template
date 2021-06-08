@@ -1,6 +1,6 @@
-import { DefaultFooter, getMenuData, getPageTitle } from '@ant-design/pro-layout';
+import { getMenuData, getPageTitle } from '@ant-design/pro-layout';
 import { Helmet, HelmetProvider } from 'react-helmet-async';
-import { Link } from 'umi';
+import { Link, useIntl, connect, FormattedMessage } from 'umi';
 import React from 'react';
 import logo from '../assets/logo.svg';
 import styles from './UserLayout.less';
@@ -18,9 +18,11 @@ const UserLayout = (props) => {
       pathname: '',
     },
   } = props;
+  const { formatMessage } = useIntl();
   const { breadcrumb } = getMenuData(routes);
   const title = getPageTitle({
     pathname: location.pathname,
+    formatMessage,
     breadcrumb,
     ...props,
   });
@@ -32,6 +34,9 @@ const UserLayout = (props) => {
       </Helmet>
 
       <div className={styles.container}>
+        <div className={styles.lang}>
+          {/* don't remove this div */}
+        </div>
         <div className={styles.content}>
           <div className={styles.top}>
             <div className={styles.header}>
@@ -41,25 +46,14 @@ const UserLayout = (props) => {
               </Link>
             </div>
             <div className={styles.desc}>
-              <div>Please provide Credentials to Login into your Account!</div>
+              Your description Text will go here
             </div>
           </div>
           {children}
         </div>
-        <DefaultFooter
-          copyright={`${new Date().getFullYear()} Grevity.Pvt.Ltd`}
-          links={[
-            {
-              key: 'Grevity.in',
-              title: 'Grevity.in',
-              href: 'https://grevity.in',
-              blankTarget: true,
-            },
-          ]}
-        />
       </div>
     </HelmetProvider>
   );
 };
 
-export default UserLayout;
+export default connect(({ settings }) => ({ ...settings }))(UserLayout);

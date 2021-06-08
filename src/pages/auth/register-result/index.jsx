@@ -2,6 +2,7 @@ import { Button, Result } from 'antd';
 import { FormattedMessage, formatMessage, Link } from 'umi';
 import React from 'react';
 import styles from './style.less';
+
 const actions = (
   <div className={styles.actions}>
     <a href="">
@@ -26,7 +27,7 @@ const RegisterResult = ({ location }) => (
         <FormattedMessage
           id="userandregister-result.register-result.msg"
           values={{
-            email: location.state ? location.state.account : 'yourname@grevity.in',
+            email: location?.state?.account || 'AntDesign@example.com',
           }}
         />
       </div>

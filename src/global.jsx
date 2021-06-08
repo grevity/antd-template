@@ -2,6 +2,7 @@ import { Button, message, notification } from 'antd';
 import React from 'react';
 import { useIntl } from 'umi';
 import defaultSettings from '../config/defaultSettings';
+
 const { pwa } = defaultSettings;
 const isHttps = document.location.protocol === 'https:'; // if pwa is true
 
@@ -73,7 +74,7 @@ if (pwa) {
       }),
       btn,
       key,
-      onClose: async () => {},
+      onClose: async () => null,
     });
   });
 } else if ('serviceWorker' in navigator && isHttps) {
@@ -92,7 +93,7 @@ if (pwa) {
     if (sw) sw.unregister();
   }); // remove all caches
 
-  if (window.caches && window.caches.keys) {
+  if (window.caches) {
     caches.keys().then((keys) => {
       keys.forEach((key) => {
         caches.delete(key);

@@ -4,7 +4,8 @@
 let CURRENT = 'NULL';
 
 /**
- * use  authority or getAuthority
+ * Use authority or getAuthority
+ *
  * @param {string|()=>String} currentAuthority
  */
 const renderAuthorize = (Authorized) => (currentAuthority) => {

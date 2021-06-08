@@ -1,7 +1,7 @@
-// https://umijs.org/config/
 import { defineConfig } from 'umi';
 import defaultSettings from './defaultSettings';
 import proxy from './proxy';
+
 const { REACT_APP_ENV } = process.env;
 export default defineConfig({
   hash: true,
@@ -15,7 +15,7 @@ export default defineConfig({
   locale: {
     default: 'en-US',
     antd: true,
-    baseNavigator: false,
+    baseNavigator: true,
   },
   dynamicImport: {
     loading: '@/components/PageLoading/index',
@@ -26,33 +26,32 @@ export default defineConfig({
   routes: [
     {
       path: '/',
-      component: '../layouts/MasterLayout',
+      component: '../layouts/BlankLayout',
       routes: [
         {
           path: '/user',
           component: '../layouts/UserLayout',
           routes: [
             {
+              path: '/user/login',
+              name: 'login',
+              component: './auth/login',
+            },
+            {
               path: '/user',
               redirect: '/user/login',
             },
             {
-              name: 'login',
-              icon: 'smile',
-              path: '/user/login',
-              component: './user/login',
-            },
-            {
               name: 'register-result',
               icon: 'smile',
-              path: '/user/register-result',
-              component: './user/register-result',
+              path: '/auth/register-result',
+              component: './auth/register-result',
             },
             {
               name: 'register',
               icon: 'smile',
               path: '/user/register',
-              component: './user/register',
+              component: './auth/register',
             },
             {
               component: '404',
@@ -83,6 +82,7 @@ export default defineConfig({
       ],
     },
   ],
+  // Theme for antd: https://ant.design/docs/react/customize-theme-cn
   theme: {
     'primary-color': defaultSettings.primaryColor,
   },
@@ -92,6 +92,5 @@ export default defineConfig({
   manifest: {
     basePath: '/',
   },
-  exportStatic: {},
   esbuild: {},
 });

@@ -1,10 +1,18 @@
+/**
+ * Ant Design Pro v4 use `@ant-design/pro-layout` to handle Layout.
+ *
+ * @see You can view component api by: https://github.com/ant-design/ant-design-pro-layout
+ */
 import ProLayout, { DefaultFooter } from '@ant-design/pro-layout';
 import React, { useEffect, useMemo, useRef } from 'react';
-import { Link, history } from 'umi';
+import { Link, useIntl, connect, history } from 'umi';
+import { GithubOutlined } from '@ant-design/icons';
 import { Result, Button } from 'antd';
 import Authorized from '@/utils/Authorized';
+import RightContent from '@/components/GlobalHeader/RightContent';
 import { getMatchMenu } from '@umijs/route-utils';
 import logo from '../assets/logo.svg';
+
 const noMatch = (
   <Result
     status={403}
@@ -18,9 +26,7 @@ const noMatch = (
   />
 );
 
-/**
- * use Authorized check all menu item
- */
+/** Use Authorized check all menu item */
 const menuDataRender = (menuList) =>
   menuList.map((item) => {
     const localItem = {
@@ -32,15 +38,8 @@ const menuDataRender = (menuList) =>
 
 const defaultFooterDom = (
   <DefaultFooter
-    copyright={`${new Date().getFullYear()} Grevity.Pvt.Ltd`}
-    links={[
-      {
-        key: 'Grevity.in',
-        title: 'Grevity.in',
-        href: 'https://grevity.in',
-        blankTarget: true,
-      },
-    ]}
+    copyright={`${new Date().getFullYear()} Company Name`}
+    links={[]}
   />
 );
 
@@ -61,9 +60,7 @@ const BasicLayout = (props) => {
       });
     }
   }, []);
-  /**
-   * init variables
-   */
+  /** Init variables */
 
   const handleMenuCollapse = (payload) => {
     if (dispatch) {
@@ -81,17 +78,22 @@ const BasicLayout = (props) => {
       },
     [location.pathname],
   );
+  const { formatMessage } = useIntl();
   return (
     <>
       <ProLayout
         logo={logo}
+        formatMessage={formatMessage}
         {...props}
-        title={"Project Name"}
         {...settings}
         onCollapse={handleMenuCollapse}
         onMenuHeaderClick={() => history.push('/')}
         menuItemRender={(menuItemProps, defaultDom) => {
-          if (menuItemProps.isUrl || !menuItemProps.path) {
+          if (
+            menuItemProps.isUrl ||
+            !menuItemProps.path ||
+            location.pathname === menuItemProps.path
+          ) {
             return defaultDom;
           }
 
@@ -100,7 +102,9 @@ const BasicLayout = (props) => {
         breadcrumbRender={(routers = []) => [
           {
             path: '/',
-            breadcrumbName: "Home",
+            breadcrumbName: formatMessage({
+              id: 'menu.home',
+            }),
           },
           ...routers,
         ]}
@@ -112,8 +116,15 @@ const BasicLayout = (props) => {
             <span>{route.breadcrumbName}</span>
           );
         }}
-        footerRender={() => defaultFooterDom}
+        footerRender={() => {
+          if (settings.footerRender || settings.footerRender === undefined) {
+            return defaultFooterDom;
+          }
+
+          return null;
+        }}
         menuDataRender={menuDataRender}
+        rightContentRender={() => <RightContent />}
         postMenuData={(menuData) => {
           menuDataRef.current = menuData || [];
           return menuData || [];
@@ -127,4 +138,7 @@ const BasicLayout = (props) => {
   );
 };
 
-export default BasicLayout
+export default connect(({ global, settings }) => ({
+  collapsed: global.collapsed,
+  settings,
+}))(BasicLayout);
